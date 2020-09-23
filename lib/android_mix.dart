@@ -1,6 +1,5 @@
 import 'package:android_mix/activity/activity.dart';
 import 'package:android_mix/archive/archive.dart';
-// import 'package:android_mix/command/command.dart';
 import 'package:android_mix/storage/storage.dart';
 import 'package:android_mix/packager/packager.dart';
 import 'package:android_mix/wifi/wifi.dart';
@@ -12,8 +11,8 @@ class AndroidMix {
     return Storage(_channel);
   }
 
-  static Packager get packager {
-    return Packager(_channel);
+  static MixPackageManager get packager {
+    return MixPackageManager(_channel);
   }
 
   static Archive get archive {

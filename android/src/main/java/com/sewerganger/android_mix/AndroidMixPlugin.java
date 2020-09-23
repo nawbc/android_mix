@@ -2,11 +2,9 @@ package com.sewerganger.android_mix;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
+import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-
 
 
 import net.lingala.zip4j.exception.ZipException;
@@ -36,6 +34,7 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
   private Storage storage;
   private Archive archive;
   private Activity activity;
+  private MixPackageManager mixPackageManager;
   private WiFi wifi;
 
   public AndroidMixPlugin() {
@@ -71,7 +70,6 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     channel.setMethodCallHandler(null);
     channel = null;
-//    screenRecorder = null;
     wifi = null;
     archive = null;
     storage = null;
@@ -102,8 +100,9 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
     storage = new Storage(context);
     archive = new Archive(channel);
     wifi = new WiFi(context, activity);
+    mixPackageManager = new MixPackageManager(context);
 
-    if(MixActivity.includeMethods.contains(call.method)){
+    if (MixActivity.includeMethods.contains(call.method)) {
       new MixActivity(context, activity, call, result);
     }
 
@@ -145,7 +144,23 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
         break;
       case "getApkInfo":
         final String path = call.argument("path");
-        result.success(storage.getApkInfo(path));
+        result.success(mixPackageManager.getApkInfo(path));
+        break;
+      case "getPackageInfoByName":
+        final String packageName = call.argument("packageName");
+        try {
+          result.success(mixPackageManager.getPackageInfoByName(packageName));
+        } catch (PackageManager.NameNotFoundException e) {
+          e.printStackTrace();
+        }
+        break;
+      case "getPackageIconByName":
+        final String packageName1 = call.argument("packageName");
+        try {
+          result.success(mixPackageManager.getPackageIconByName(packageName1));
+        } catch (PackageManager.NameNotFoundException e) {
+          e.printStackTrace();
+        }
         break;
       case "getTotalExternalStorageSize":
         result.success(storage.getTotalExternalStorageSize());
@@ -306,7 +321,7 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
           }
         }).start();
         break;
-        // WIFI
+      // WIFI
       case "isConnected":
         result.success(wifi.isConnected());
         break;
