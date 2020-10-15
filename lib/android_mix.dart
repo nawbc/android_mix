@@ -19,9 +19,9 @@ class AndroidMix {
     return Archive(_channel);
   }
 
-  static WiFi get wifi {
-    return WiFi(_channel);
-  }
+  // static WiFi get wifi {
+  //   return WiFi(_channel);
+  // }
 
   static Activity get activity {
     return Activity(_channel);

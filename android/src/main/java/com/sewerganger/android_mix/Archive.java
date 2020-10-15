@@ -109,14 +109,12 @@ class ArchiveMapper {
   }
 }
 
-
 public class Archive {
   MethodChannel channel;
 
   public Archive(MethodChannel channel) {
     this.channel = channel;
   }
-
 
   public boolean zip(ArrayList<String> paths, String targetPath, CompressionLevel compressionLevel, CompressionMethod compressionMethod, EncryptionMethod encryptionMethod, String pwd) {
     ZipFile zipFile;

@@ -3,7 +3,6 @@ package com.sewerganger.android_mix;
 import android.app.Activity;
 import android.content.Context;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 

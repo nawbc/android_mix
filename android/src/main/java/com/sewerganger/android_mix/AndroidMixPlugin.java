@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
 
-
 import net.lingala.zip4j.exception.ZipException;
 
 import org.rauschig.jarchivelib.Archiver;
@@ -35,7 +34,7 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
   private Archive archive;
   private Activity activity;
   private MixPackageManager mixPackageManager;
-  private WiFi wifi;
+  // private WiFi wifi;
 
   public AndroidMixPlugin() {
   }
@@ -62,15 +61,13 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "android_mix");
     context = flutterPluginBinding.getApplicationContext();
     channel.setMethodCallHandler(this);
-
   }
-
 
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     channel.setMethodCallHandler(null);
     channel = null;
-    wifi = null;
+    // wifi = null;
     archive = null;
     storage = null;
   }
@@ -92,14 +89,16 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
 
   @Override
   public void onDetachedFromActivity() {
-
+    if (!activity.isDestroyed()) {
+      activity.finish();
+    }
   }
 
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull final Result result) {
     storage = new Storage(context);
     archive = new Archive(channel);
-    wifi = new WiFi(context, activity);
+    // wifi = new WiFi(context, activity);
     mixPackageManager = new MixPackageManager(context);
 
     if (MixActivity.includeMethods.contains(call.method)) {
@@ -181,7 +180,6 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
           @Override
           public void run() {
             final boolean r = archive.zip(paths, targetPath, ArchiveMapper.level(level), ArchiveMapper.method(method), ArchiveMapper.encrypt(encrypt), pwd);
-
             activity.runOnUiThread(new Runnable() {
               @Override
               public void run() {
@@ -294,14 +292,14 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
           @Override
           public void run() {
 
-            Archiver archiver;
-            if (compressionType2 == null) {
-              archiver = ArchiverFactory.createArchiver(ArchiveMapper.archiveFormat(archiveFormat2));
-            } else {
-              archiver = ArchiverFactory.createArchiver(ArchiveMapper.archiveFormat(archiveFormat2), ArchiveMapper.compressionType(compressionType2));
-            }
-
             try {
+              Archiver archiver;
+              if (compressionType2 == null) {
+                archiver = ArchiverFactory.createArchiver(ArchiveMapper.archiveFormat(archiveFormat2));
+              } else {
+                archiver = ArchiverFactory.createArchiver(ArchiveMapper.archiveFormat(archiveFormat2), ArchiveMapper.compressionType(compressionType2));
+              }
+
               archiver.extract(new File(path5), new File(dest));
               activity.runOnUiThread(new Runnable() {
                 @Override
@@ -321,17 +319,17 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
           }
         }).start();
         break;
-      // WIFI
-      case "isConnected":
-        result.success(wifi.isConnected());
-        break;
-      case "getIp":
-        try {
-          result.success(wifi.getIp());
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-        break;
+      // // WIFI
+      // case "isConnected":
+      //   result.success(wifi.isConnected());
+      //   break;
+      // case "getIp":
+      //   try {
+      //     result.success(wifi.getIp());
+      //   } catch (Exception e) {
+      //     e.printStackTrace();
+      //   }
+      //   break;
 
       default:
         result.notImplemented();

@@ -145,8 +145,6 @@ public class Storage {
   public List<String> getExternalStorageDirectories(String type) {
     final List<String> paths = new ArrayList<>();
 
-//      new SDCardBroadcastReceiver().onReceive();
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
       for (File dir : context.getExternalFilesDirs(type)) {
         if (dir != null) {
