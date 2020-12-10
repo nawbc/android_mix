@@ -42,11 +42,11 @@ class Storage {
     return path;
   }
 
-  Future<List<String>> getExternalStorageDirectories(
+  Future<List<dynamic>> getExternalStorageDirectories(
     StorageDirectory type,
   ) async {
-    final List<String> path = await _channel
-        .invokeMethod('getExternalStorageDirectories', {'type': type});
+    final List<dynamic> path = await _channel
+        .invokeMethod('getExternalStorageDirectories', {'type': type.index});
     return path;
   }
 

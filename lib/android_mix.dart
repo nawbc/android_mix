@@ -26,8 +26,4 @@ class AndroidMix {
   static Activity get activity {
     return Activity(_channel);
   }
-
-  // static Command get command {
-  //   return Command(_channel);
-  // }
 }

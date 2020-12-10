@@ -3,9 +3,12 @@
 // import android.app.Activity;
 // import android.content.Context;
 // import android.net.ConnectivityManager;
+// import android.net.Network;
+// import android.net.NetworkCapabilities;
 // import android.net.NetworkInfo;
 // import android.net.wifi.WifiInfo;
 // import android.net.wifi.WifiManager;
+// import android.os.Build;
 
 // import java.net.Inet4Address;
 // import java.net.InetAddress;
@@ -13,10 +16,9 @@
 // import java.net.SocketException;
 // import java.util.Enumeration;
 
-// import io.flutter.plugin.common.MethodCall;
-// import io.flutter.plugin.common.MethodChannel;
+// import io.flutter.Log;
 
-// public class WiFi {
+// class WiFi {
 //   private Context context;
 //   private Activity activity;
 //   private WifiManager wifiManager;
@@ -53,28 +55,58 @@
 //   }
 
 //   public String getIp() throws Exception {
-//     NetworkInfo info = ((ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
-//     if (info != null && info.isConnected()) {
-//       if (info.getType() == ConnectivityManager.TYPE_MOBILE) {
-//         try {
-//           for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
-//             NetworkInterface intf = en.nextElement();
-//             for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-//               InetAddress inetAddress = enumIpAddr.nextElement();
-//               if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
-//                 return inetAddress.getHostAddress();
+//     ConnectivityManager cm = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+//     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//       Network network = cm.getActiveNetwork();
+//       if (network != null) {
+//         NetworkCapabilities capabilities = cm.getNetworkCapabilities(network);
+//         Log.d("DEMO", capabilities.toString());
+//         if (capabilities != null) {
+//           if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+//             Log.d("demo1",  "==========================");
+//             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+//               NetworkInterface intf = en.nextElement();
+//               for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+//                 InetAddress inetAddress = enumIpAddr.nextElement();
+//                 if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+//                   return inetAddress.getHostAddress();
+//                 }
 //               }
 //             }
 //           }
-//         } catch (SocketException e) {
-//           throw e;
+
+//           if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+//             Log.d("demo2",  "==========================");
+//             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+//             return intIP2StringIP(wifiInfo.getIpAddress());
+//           }
 //         }
-//       } else if (info.getType() == ConnectivityManager.TYPE_WIFI) {
-//         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-//         return intIP2StringIP(wifiInfo.getIpAddress());
 //       }
 //     } else {
-//       throw new Exception("wifi unavailable");
+//       NetworkInfo info = ((ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+//       Log.d("DEMO1", "===============================");
+//       if (info != null) {
+//         if (info.getType() == ConnectivityManager.TYPE_MOBILE) {
+//           Log.d("DEMO321321", "=============@==========@@@@========");
+//           try {
+//             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+//               NetworkInterface intf = en.nextElement();
+//               for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+//                 InetAddress inetAddress = enumIpAddr.nextElement();
+//                 if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+//                   return inetAddress.getHostAddress();
+//                 }
+//               }
+//             }
+//           } catch (SocketException e) {
+//             throw e;
+//           }
+//         } else if (info.getType() == ConnectivityManager.TYPE_WIFI) {
+//           Log.d("D1312313121", "=============@==========@@@@========");
+//           WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+//           return intIP2StringIP(wifiInfo.getIpAddress());
+//         }
+//       }
 //     }
 //     return null;
 //   }

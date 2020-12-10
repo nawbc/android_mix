@@ -49,11 +49,6 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
   // depending on the user's project. onAttachedToEngine or registerWith must both be defined
   // in the same class.
   public static void registerWith(Registrar registrar) {
-    AndroidMixPlugin instance = new AndroidMixPlugin();
-    instance.channel = new MethodChannel(registrar.messenger(), "android_mix");
-    instance.context = registrar.context();
-    instance.channel.setMethodCallHandler(instance);
-    new Archive(instance.channel);
   }
 
   @Override
@@ -89,9 +84,9 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
 
   @Override
   public void onDetachedFromActivity() {
-    if (!activity.isDestroyed()) {
-      activity.finish();
-    }
+      if (!activity.isDestroyed()) {
+        activity.finish();
+      }
   }
 
   @Override
@@ -319,7 +314,6 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
           }
         }).start();
         break;
-      // // WIFI
       // case "isConnected":
       //   result.success(wifi.isConnected());
       //   break;
