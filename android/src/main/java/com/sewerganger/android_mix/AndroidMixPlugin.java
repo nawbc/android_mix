@@ -3,11 +3,8 @@ package com.sewerganger.android_mix;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-
 import androidx.annotation.NonNull;
-
 import net.lingala.zip4j.exception.ZipException;
-
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
 
@@ -93,7 +90,6 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
   public void onMethodCall(@NonNull MethodCall call, @NonNull final Result result) {
     storage = new Storage(context);
     archive = new Archive(channel);
-    // wifi = new WiFi(context, activity);
     mixPackageManager = new MixPackageManager(context);
 
     if (MixActivity.includeMethods.contains(call.method)) {
@@ -213,30 +209,6 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
       case "isValidZipFile":
         final String path4 = call.argument("path");
         result.success(archive.isValidZipFile(path4));
-        break;
-      case "extractTarGz":
-        final String tarPath = call.argument("source");
-        final String destPath = call.argument("dest");
-        final String linuxRootPath = call.argument("linuxRootPath");
-
-        new Thread(new Runnable() {
-          @Override
-          public void run() {
-
-            try {
-              final ArrayList<ArrayList<String>> list = archive.extractTarGz(tarPath, destPath, linuxRootPath);
-              activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                  result.success(list);
-                }
-              });
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
-          }
-        }).start();
-
         break;
       case "createArchive":
         final String source1 = call.argument("source");

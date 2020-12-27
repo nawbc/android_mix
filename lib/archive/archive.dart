@@ -80,13 +80,4 @@ class Archive {
       if (compressionType != null) ...{'compressionType': compressionType.index}
     });
   }
-
-  Future<List> extractTarGzFeedSymLink(
-      String tarPath, String dest, String linuxRootPath) {
-    return _channel.invokeMethod('extractTarGz', {
-      'source': tarPath,
-      'dest': dest,
-      'linuxRootPath': linuxRootPath,
-    });
-  }
 }
