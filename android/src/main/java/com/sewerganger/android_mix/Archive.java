@@ -1,8 +1,7 @@
 package com.sewerganger.android_mix;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
+import com.sewerganger.android_mix.jarchivelib.ArchiveFormat;
+import com.sewerganger.android_mix.jarchivelib.CompressionType;
 
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -11,20 +10,8 @@ import net.lingala.zip4j.model.enums.CompressionLevel;
 import net.lingala.zip4j.model.enums.CompressionMethod;
 import net.lingala.zip4j.model.enums.EncryptionMethod;
 
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-import org.apache.commons.compress.utils.IOUtils;
-import org.rauschig.jarchivelib.ArchiveFormat;
-import org.rauschig.jarchivelib.CompressionType;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
 import io.flutter.plugin.common.MethodChannel;

@@ -69,11 +69,11 @@ class Archive {
     });
   }
 
-  Future<bool> createArchive(String source, String dest, String archiveName,
-      ArchiveFormat archiveFormat,
+  Future<bool> createArchive(List<String> paths, String dest,
+      String archiveName, ArchiveFormat archiveFormat,
       {CompressionType compressionType}) {
     return _channel.invokeMethod('createArchive', {
-      'source': source,
+      'paths': paths,
       'dest': dest,
       'archiveName': archiveName,
       'archiveFormat': archiveFormat.index,

@@ -3,10 +3,15 @@ package com.sewerganger.android_mix;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+
 import androidx.annotation.NonNull;
+
+import com.sewerganger.android_mix.jarchivelib.Archiver;
+import com.sewerganger.android_mix.jarchivelib.ArchiverFactory;
+
 import net.lingala.zip4j.exception.ZipException;
-import org.rauschig.jarchivelib.Archiver;
-import org.rauschig.jarchivelib.ArchiverFactory;
+
+
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +36,6 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
   private Archive archive;
   private Activity activity;
   private MixPackageManager mixPackageManager;
-  // private WiFi wifi;
 
   public AndroidMixPlugin() {
   }
@@ -59,7 +63,6 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     channel.setMethodCallHandler(null);
     channel = null;
-    // wifi = null;
     archive = null;
     storage = null;
   }
@@ -81,9 +84,9 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
 
   @Override
   public void onDetachedFromActivity() {
-      if (!activity.isDestroyed()) {
-        activity.finish();
-      }
+    if (!activity.isDestroyed()) {
+      activity.finish();
+    }
   }
 
   @Override
@@ -158,7 +161,6 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
       case "getValidExternalStorageSize":
         result.success(storage.getValidExternalStorageSize());
         break;
-      //archive
       case "zip":
         final ArrayList<String> paths = call.argument("paths");
         final String targetPath = call.argument("targetPath");
@@ -211,23 +213,37 @@ public class AndroidMixPlugin implements FlutterPlugin, MethodCallHandler, Activ
         result.success(archive.isValidZipFile(path4));
         break;
       case "createArchive":
-        final String source1 = call.argument("source");
+        final ArrayList<String> archivePaths = call.argument("paths");
         final String dest1 = call.argument("dest");
         final String archiveName = call.argument("archiveName");
         final int archiveFormat1 = call.argument("archiveFormat");
         final Integer compressionType1 = call.argument("compressionType");
 
+        if (archivePaths == null) {
+          result.success(false);
+          return;
+        }
         new Thread(new Runnable() {
           @Override
           public void run() {
             Archiver archiver;
-            if (compressionType1 == null) {
-              archiver = ArchiverFactory.createArchiver(ArchiveMapper.archiveFormat(archiveFormat1));
-            } else {
+            ArrayList<File> willCompressedList = new ArrayList<>();
+
+
+            for (String p: archivePaths){
+              willCompressedList.add(new File(p));
+            }
+
+            File[] willCompressedArray = new File[willCompressedList.size()];
+
+              if (compressionType1 == null) {
+                archiver = ArchiverFactory.createArchiver(ArchiveMapper.archiveFormat(archiveFormat1));
+              } else {
               archiver = ArchiverFactory.createArchiver(ArchiveMapper.archiveFormat(archiveFormat1), ArchiveMapper.compressionType(compressionType1));
             }
             try {
-              archiver.create(archiveName, new File(dest1), new File(source1));
+
+              archiver.create(archiveName, new File(dest1), willCompressedList.toArray(willCompressedArray));
               activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
